@@ -12,7 +12,7 @@ curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
-    "password": "password123"
+    "password": "Password123!"
   }'
 ```
 
@@ -32,7 +32,7 @@ curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
-    "password": "password123"
+    "password": "Password123!"
   }'
 ```
 
@@ -146,5 +146,7 @@ curl -X POST http://localhost:3000/api-keys/YOUR_KEY_ID/rotate \
 4. Access endpoints without JWT → 401 Unauthorized
 5. Revoke another user's key → 403 Forbidden
 6. Invalid email format → 400 Bad Request
-7. Password < 8 chars → 400 Bad Request
+7. Password requirements not met → 400 Bad Request
+   - Must be at least 8 characters
+   - Must contain uppercase, lowercase, number, and special character (@$!%*?&)
 
