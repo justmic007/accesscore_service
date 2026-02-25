@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { ApiKeyStatus } from '../enums/api-key-status.enum';
 
+export type ApiKeyDocument = HydratedDocument<ApiKey>;
+
 @Schema({ timestamps: true })
-export class ApiKey extends Document {
+export class ApiKey {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
   userId: Types.ObjectId;
 

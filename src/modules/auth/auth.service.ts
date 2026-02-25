@@ -33,12 +33,12 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    await user.save();
+    const savedUser = await user.save();
 
     return {
-      id: user._id,
-      email: user.email,
-      createdAt: user.createdAt,
+      id: savedUser._id,
+      email: savedUser.email,
+      createdAt: (savedUser as any).createdAt,
     };
   }
 
