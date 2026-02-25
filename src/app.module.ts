@@ -8,6 +8,7 @@ import { ApiKeysModule } from './modules/api-keys/api-keys.module';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import appConfig from './config/app.config';
+import { AccessLogsModule } from './modules/access-logs/access-logs.module';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import appConfig from './config/app.config';
     }),
     AuthModule,
     ApiKeysModule,
+    AccessLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
