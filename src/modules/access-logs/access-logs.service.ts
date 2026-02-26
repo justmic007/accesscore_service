@@ -33,7 +33,7 @@ export class AccessLogsService {
 
     async findByUser(userId: string, limit = 50) {
         return this.accessLogModel
-            .find({ userId })
+            .find({ userId: new Types.ObjectId(userId) })
             .sort({ timestamp: -1 })
             .limit(limit)
             .exec();
@@ -41,7 +41,7 @@ export class AccessLogsService {
 
     async findByApiKey(apiKeyId: string, limit = 50) {
         return this.accessLogModel
-            .find({ apiKeyId })
+            .find({ apiKeyId: new Types.ObjectId(apiKeyId) })
             .sort({ timestamp: -1 })
             .limit(limit)
             .exec();
