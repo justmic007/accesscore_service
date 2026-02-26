@@ -15,8 +15,15 @@ async function bootstrap() {
     }),
   );
 
-  // Enable CORS
-  app.enableCors();
+  // Enable CORS with security settings
+  app.enableCors({
+    origin: process.env.NODE_ENV === 'production'
+      ? process.env.ALLOWED_ORIGINS?.split(',') || false
+      : true, // Allow all in development
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
+  });
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('app.port');
