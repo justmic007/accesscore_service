@@ -221,6 +221,7 @@ yourMethod() {
 - **Max Active Keys**: 3 per user (configurable)
 - **Rate Limiting**: Configurable per API key (default: 100 requests/hour)
 - **Authentication**: Supports both `x-api-key` header and `Authorization: Bearer` format
+- **CORS**: Configurable origins for production, open in development
 
 ## 🗄️ Database Schema
 
@@ -362,6 +363,7 @@ mongodb+srv://<username>:<password>@<cluster>.mongodb.net/accesscore?retryWrites
 | `JWT_EXPIRATION` | JWT token expiration | `24h` | No |
 | `API_KEY_MAX_ACTIVE` | Max active keys per user | `3` | No |
 | `API_KEY_DEFAULT_EXPIRATION_DAYS` | Default key expiration | `365` | No |
+| `ALLOWED_ORIGINS` | CORS allowed origins (production) | - | No |
 
 ## 📊 Test Coverage
 
