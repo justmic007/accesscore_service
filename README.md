@@ -259,7 +259,7 @@ migrations/               # Database migrations
 
 ### Deployment URL
 ```
-Production: [DEPLOYMENT_URL_HERE]
+Production: https://sxz4fpw7u6.us-east-1.awsapprunner.com
 ```
 
 ### Docker Deployment
