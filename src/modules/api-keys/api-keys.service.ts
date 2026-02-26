@@ -2,10 +2,11 @@ import {
   Injectable,
   ForbiddenException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { ApiKey } from './schemas/api-key.schema';
 import { ApiKeyStatus } from './enums/api-key-status.enum';
 import { GenerateApiKeyDto } from './dto/generate-api-key.dto';
@@ -56,6 +57,7 @@ export class ApiKeysService {
       key: hashedKey,
       prefix,
       name: dto.name,
+      rateLimit: dto.rateLimit || 100,
       status: ApiKeyStatus.ACTIVE,
       expiresAt,
     });
@@ -81,6 +83,7 @@ export class ApiKeysService {
       prefix: savedKey.prefix,
       name: savedKey.name,
       status: savedKey.status,
+      rateLimit: savedKey.rateLimit,
       expiresAt: savedKey.expiresAt,
       createdAt: (savedKey as any).createdAt,
     };
@@ -96,6 +99,7 @@ export class ApiKeysService {
       prefix: key.prefix,
       name: key.name,
       status: key.status,
+      rateLimit: key.rateLimit,
       expiresAt: key.expiresAt,
       lastUsedAt: key.lastUsedAt,
       createdAt: (key as any).createdAt,
@@ -103,6 +107,10 @@ export class ApiKeysService {
   }
 
   async revoke(userId: string, keyId: string): Promise<{ message: string }> {
+    if (!Types.ObjectId.isValid(keyId)) {
+      throw new BadRequestException('Invalid API key ID format');
+    }
+
     const apiKey = await this.apiKeyModel.findById(keyId);
 
     if (!apiKey) {
@@ -141,6 +149,10 @@ export class ApiKeysService {
     userId: string,
     keyId: string,
   ): Promise<ApiKeyResponseDto> {
+    if (!Types.ObjectId.isValid(keyId)) {
+      throw new BadRequestException('Invalid API key ID format');
+    }
+
     const oldKey = await this.apiKeyModel.findById(keyId);
 
     if (!oldKey) {
@@ -172,6 +184,7 @@ export class ApiKeysService {
       key: hashedKey,
       prefix,
       name: oldKey.name,
+      rateLimit: oldKey.rateLimit,
       status: ApiKeyStatus.ACTIVE,
       expiresAt,
     });
@@ -202,6 +215,7 @@ export class ApiKeysService {
       prefix: savedNewKey.prefix,
       name: savedNewKey.name,
       status: savedNewKey.status,
+      rateLimit: savedNewKey.rateLimit,
       expiresAt: savedNewKey.expiresAt,
       createdAt: (savedNewKey as any).createdAt,
     };

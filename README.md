@@ -10,6 +10,7 @@ API Key Management System built with NestJS - A secure and scalable solution for
 - ✅ Maximum 3 active keys per user
 - ✅ Automatic key expiration (1 year default)
 - ✅ Access logging (bonus feature)
+- ✅ Rate limiting per API key (bonus feature)
 - ✅ 74%+ test coverage
 
 ## 📋 Tech Stack
@@ -147,6 +148,34 @@ Import the Postman collection for complete API documentation with examples:
 #### Access Logs (Protected - JWT Required)
 - `GET /access-logs` - View audit logs of all API key operations
 
+## 🚀 Rate Limiting Implementation
+
+Rate limiting guards are implemented and ready to use:
+
+**Guards Available:**
+- `ApiKeyAuthGuard` - Validates API keys from `x-api-key` or `Authorization: Bearer` headers
+- `ApiKeyRateLimitGuard` - Enforces per-API-key rate limits (configurable, default 100 req/hour)
+
+**How to Use:**
+```typescript
+import { UseGuards } from '@nestjs/common';
+import { ApiKeyAuthGuard } from './common/guards/api-key-auth.guard';
+import { ApiKeyRateLimitGuard } from './common/guards/api-key-rate-limit.guard';
+
+@Get('your-endpoint')
+@UseGuards(ApiKeyAuthGuard, ApiKeyRateLimitGuard)
+yourMethod() {
+  return { data: 'protected' };
+}
+```
+
+**Features:**
+- Per-API-key rate limiting (not global)
+- Configurable limits when generating keys (1-10000 requests/hour)
+- Automatic request tracking via access logs
+- Returns HTTP 429 when limit exceeded
+- Supports both `x-api-key` and `Authorization: Bearer` formats
+
 ### Quick Start Example
 
 1. **Register a user**
@@ -176,9 +205,11 @@ Import the Postman collection for complete API documentation with examples:
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
      -d '{
-       "name": "Production API Key"
+       "name": "Production API Key",
+       "rateLimit": 100
      }'
    ```
+   Save the `key` from response. This key can be used by external apps to access protected endpoints.
 
 ## 🔒 Security Features
 
@@ -188,6 +219,8 @@ Import the Postman collection for complete API documentation with examples:
 - **JWT Expiration**: 24 hours (configurable)
 - **Key Expiration**: 1 year default (configurable)
 - **Max Active Keys**: 3 per user (configurable)
+- **Rate Limiting**: Configurable per API key (default: 100 requests/hour)
+- **Authentication**: Supports both `x-api-key` header and `Authorization: Bearer` format
 
 ## 🗄️ Database Schema
 
@@ -211,6 +244,7 @@ Import the Postman collection for complete API documentation with examples:
   prefix: string (visible, e.g., "ak_live_abc123")
   name: string
   status: "ACTIVE" | "REVOKED" | "EXPIRED"
+  rateLimit: number (requests per hour, default: 100)
   expiresAt: Date
   lastUsedAt: Date
   revokedAt: Date
@@ -333,6 +367,56 @@ mongodb+srv://<username>:<password>@<cluster>.mongodb.net/accesscore?retryWrites
 
 Current test coverage: **74.44%**
 
+## 🚀 Rate Limiting
+
+### How It Works
+
+1. **Per-API-Key Limits**: Each API key has its own rate limit (default: 100 requests/hour)
+2. **Configurable**: Set custom rate limits when generating API keys (1-10000 requests/hour)
+3. **Automatic Tracking**: All API key requests are logged in the access logs
+4. **Clear Errors**: Returns HTTP 429 with descriptive message when limit exceeded
+
+### Usage
+
+**Generate API key with custom rate limit:**
+```bash
+curl -X POST http://localhost:3000/api-keys \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My API Key",
+    "rateLimit": 500
+  }'
+```
+
+**Apply guards to protect endpoints:**
+```typescript
+@Get('your-endpoint')
+@UseGuards(ApiKeyAuthGuard, ApiKeyRateLimitGuard)
+yourMethod() {
+  return { data: 'protected' };
+}
+```
+
+**External apps access with API key:**
+```bash
+# Using x-api-key header
+curl -X GET http://localhost:3000/your-endpoint \
+  -H "x-api-key: YOUR_API_KEY"
+
+# Using Authorization Bearer format
+curl -X GET http://localhost:3000/your-endpoint \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Rate limit exceeded response:**
+```json
+{
+  "statusCode": 429,
+  "message": "Rate limit exceeded. Maximum 100 requests per hour."
+}
+```
+
 
 ## 🐳 Docker
 
@@ -344,5 +428,20 @@ The application includes a `Dockerfile` for containerization:
 - Health check endpoint included
 
 See `Dockerfile` for complete configuration.
+
+## ✅ Bonus Features Implemented
+
+1. **Access Logs (Audit Trail)**
+   - Tracks all API key operations
+   - Records endpoint, method, status code, IP, and user agent
+   - Queryable by user or API key
+   - Automatic logging via interceptor
+
+2. **Rate Limiting per API Key**
+   - Configurable limits per API key (1-10000 requests/hour)
+   - Automatic request tracking via access logs
+   - Returns HTTP 429 when limit exceeded
+   - Supports both `x-api-key` and `Authorization: Bearer` headers
+   - Apply to any endpoint using `@UseGuards(ApiKeyAuthGuard, ApiKeyRateLimitGuard)`
 
 
