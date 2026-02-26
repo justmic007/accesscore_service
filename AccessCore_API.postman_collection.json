@@ -7,7 +7,17 @@
     "variable": [
         {
             "key": "baseUrl",
+            "value": "https://sxz4fpw7u6.us-east-1.awsapprunner.com",
+            "type": "string"
+        },
+        {
+            "key": "localUrl",
             "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "productionUrl",
+            "value": "https://sxz4fpw7u6.us-east-1.awsapprunner.com",
             "type": "string"
         },
         {
