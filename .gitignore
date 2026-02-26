@@ -42,3 +42,7 @@ tmp/
 
 # NestJS
 .nest/
+
+
+# Workflow
+API_KEY_WORKFLOW.md

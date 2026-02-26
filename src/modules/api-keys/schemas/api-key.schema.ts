@@ -29,6 +29,9 @@ export class ApiKey {
   @Prop({ type: Date, index: true })
   expiresAt?: Date;
 
+  @Prop({ default: 100 })
+  rateLimit: number; // requests per hour an app can make using this API key
+
   @Prop({ type: Date })
   lastUsedAt?: Date;
 

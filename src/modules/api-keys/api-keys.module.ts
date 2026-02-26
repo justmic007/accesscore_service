@@ -14,6 +14,6 @@ import { AccessLogsModule } from '../access-logs/access-logs.module';
   ],
   controllers: [ApiKeysController],
   providers: [ApiKeysService],
-  exports: [ApiKeysService],
+  exports: [ApiKeysService, MongooseModule],
 })
 export class ApiKeysModule {}

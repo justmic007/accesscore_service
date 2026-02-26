@@ -5,6 +5,7 @@ export class ApiKeyResponseDto {
   prefix: string;
   name?: string;
   status: ApiKeyStatus;
+  rateLimit: number;
   expiresAt?: Date;
   lastUsedAt?: Date;
   createdAt: Date;
