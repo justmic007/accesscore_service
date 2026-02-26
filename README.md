@@ -144,6 +144,9 @@ Import the Postman collection for complete API documentation with examples:
 - `DELETE /api-keys/:id` - Revoke an API key
 - `POST /api-keys/:id/rotate` - Rotate an API key
 
+#### Access Logs (Protected - JWT Required)
+- `GET /access-logs` - View audit logs of all API key operations
+
 ### Quick Start Example
 
 1. **Register a user**

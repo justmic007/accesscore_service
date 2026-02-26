@@ -679,6 +679,72 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Access Logs",
+            "item": [
+                {
+                    "name": "Get My Access Logs",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/access-logs",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "access-logs"
+                            ]
+                        },
+                        "description": "View audit logs of all API key operations (generate, revoke, rotate) for the authenticated user."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{accessToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/access-logs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "access-logs"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "[{\"_id\":\"507f1f77bcf86cd799439015\",\"apiKeyId\":\"507f1f77bcf86cd799439012\",\"userId\":\"507f1f77bcf86cd799439011\",\"endpoint\":\"/api-keys\",\"method\":\"POST\",\"statusCode\":201,\"timestamp\":\"2024-12-31T00:00:00.000Z\",\"createdAt\":\"2024-12-31T00:00:00.000Z\",\"updatedAt\":\"2024-12-31T00:00:00.000Z\"}]"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

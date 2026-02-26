@@ -12,12 +12,14 @@ import { GenerateApiKeyDto } from './dto/generate-api-key.dto';
 import { ApiKeyResponseDto } from './dto/api-key-response.dto';
 import { generateApiKey } from '../../common/utils/crypto.util';
 import { hashApiKey } from '../../common/utils/hash.util';
+import { AccessLogsService } from '../access-logs/access-logs.service';
 
 @Injectable()
 export class ApiKeysService {
   constructor(
     @InjectModel(ApiKey.name) private apiKeyModel: Model<ApiKey>,
     private configService: ConfigService,
+    private accessLogsService: AccessLogsService,
   ) {}
 
   async generate(
@@ -59,6 +61,19 @@ export class ApiKeysService {
     });
 
     const savedKey = await apiKey.save();
+
+    // Log the operation
+    try {
+      await this.accessLogsService.create({
+        apiKeyId: savedKey._id.toString(),
+        userId,
+        endpoint: '/api-keys',
+        method: 'POST',
+        statusCode: 201,
+      });
+    } catch (error) {
+      // Silent fail - don't block API key creation if logging fails
+    }
 
     return {
       id: savedKey._id.toString(),
@@ -105,6 +120,19 @@ export class ApiKeysService {
     apiKey.status = ApiKeyStatus.REVOKED;
     apiKey.revokedAt = new Date();
     await apiKey.save();
+
+    // Log the operation
+    try {
+      await this.accessLogsService.create({
+        apiKeyId: keyId,
+        userId,
+        endpoint: `/api-keys/${keyId}`,
+        method: 'DELETE',
+        statusCode: 200,
+      });
+    } catch (error) {
+      // Silent fail
+    }
 
     return { message: 'API key revoked successfully' };
   }
@@ -154,6 +182,19 @@ export class ApiKeysService {
     oldKey.status = ApiKeyStatus.REVOKED;
     oldKey.revokedAt = new Date();
     await oldKey.save();
+
+    // Log the operation
+    try {
+      await this.accessLogsService.create({
+        apiKeyId: savedNewKey._id.toString(),
+        userId,
+        endpoint: `/api-keys/${keyId}/rotate`,
+        method: 'POST',
+        statusCode: 200,
+      });
+    } catch (error) {
+      // Silent fail
+    }
 
     return {
       id: savedNewKey._id.toString(),
