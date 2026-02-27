@@ -46,3 +46,5 @@ tmp/
 
 # Workflow
 API_KEY_WORKFLOW.md
+TESTING.md
+test-endpoints.md
